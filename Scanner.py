@@ -82,7 +82,7 @@ def make_tokens(text: str):
 def create_output(input_path: str) -> str:
     directory, base = os.path.split(input_path)
     name, ext = os.path.splitext(base)
-    new_name = name.replace("input", "output", 1) # switch input -> output in filename
+    new_name = name.replace("input", "output_scan", 1) # switch input -> output_scan in filename
     return os.path.join(directory, new_name + ext)
 
 # Function that reads the input(s)
@@ -102,11 +102,11 @@ def write_tokens(output_path: str, items):
 
         
 if __name__ == "__main__":
-    input_file = "input3.txt" # Change input file here
+    input_file = "sample_input.txt"  # change here
     with open(input_file, "r", encoding="utf-8") as f:
         text = f.read()
 
-    charstream = make_tokens(text)
+    token_list = make_tokens(text)
     output_file = create_output(input_file)
-    write_tokens(output_file, charstream)
+    write_tokens(output_file, token_list)
     print(f"Created {output_file}")
