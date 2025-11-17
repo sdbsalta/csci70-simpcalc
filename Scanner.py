@@ -132,10 +132,18 @@ def tokenize(text):
         tokens.append("Lexical Error: Illegal character/character sequence")
         tokens.append("Error")
         i += 1
+        
+        '''
+        iya feat: if it encounters an illegal char & there's a letter beside it,
+        it will skip the adjacent first letter 
+        '''
+        if i < n and text[i].isalpha():
+            i += 1
+            
+        continue
 
     tokens.append("EndofFile")
     return tokens
-
 
 def process_file(filename):
     with open(filename, "r") as f:
