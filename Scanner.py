@@ -78,6 +78,12 @@ def tokenize(text):
                         tokens.append("Error")
                         break
                     has_dot = True
+                    # iya feat: check if dot is followed by a digit 
+                    if i + 1 >= n or not text[i+1].isdigit():
+                        tokens.append("Lexical Error: Invalid number format")
+                        tokens.append("Error")
+                        i += 1
+                        break
                 i += 1
             else:
                 if i < n and text[i].lower() == "e":
