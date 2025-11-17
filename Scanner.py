@@ -93,6 +93,7 @@ def tokenize(text):
                     if i >= n or not text[i].isdigit():
                         tokens.append("Lexical Error: Invalid number format")
                         tokens.append("Error")
+                        i += 1
                         continue
                     while i < n and text[i].isdigit():
                         i += 1
