@@ -1,4 +1,5 @@
 import os
+import re
 
 KEYWORDS = {
     "PRINT": "Print",
@@ -135,7 +136,13 @@ def process_file(filename):
 
     tokens = tokenize(text)
 
-    output = filename.replace(".txt", "_output_scan.txt")
+    match = re.search(r'_(\d+)\.txt$', filename)
+    
+    if match:
+        number = match.group(1) # to accomodate sample_input_1 -> sample_output_scan_1
+        output = f'sample_output_scan_{number}.txt'
+    else:
+        output = filename.replace('.txt', '_output_scan.txt')
 
     with open(output, "w") as f:
         for t in tokens:
