@@ -134,10 +134,10 @@ def tokenize(text):
         i += 1
         
         '''
-        iya feat: if it encounters an illegal char & there's a letter beside it,
-        it will skip the adjacent first letter 
+        iya feat: if it encounters an illegal char & there's a letter/digit beside it,
+        it will skip the adjacent char 
         '''
-        if i < n and text[i].isalpha():
+        if c == "!" and i < n and (text[i].isdigit() or text[i].isalpha()):
             i += 1
             
         continue
