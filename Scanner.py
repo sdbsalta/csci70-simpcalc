@@ -31,22 +31,19 @@ OPERATORS = {
 
 MULTI_OPS = ["<=", ">=", "!=", ":=", "**"]
 
+
 def tokenize(text):
-    line = 1
     tokens = []
     i = 0
     n = len(text)
+    line = 1  # iya feat: keep track of line number for error messages
 
     while i < n:
         c = text[i]
-        
-        # iya feat: to count pangilan line na for error line identifier // bonus
-        if c == "\n":
-            line += 1
-            i += 1
-            continue
 
         if c.isspace():
+            if c == "\n":
+                line += 1  # increment line count
             i += 1
             continue
         
@@ -84,7 +81,6 @@ def tokenize(text):
                         tokens.append("Error")
                         break
                     has_dot = True
-                    # iya feat: check if dot is followed by a digit 
                     if i + 1 >= n or not text[i+1].isdigit():
                         tokens.append(f"Lexical Error (line {line}): Invalid number format")
                         tokens.append("Error")
@@ -103,7 +99,7 @@ def tokenize(text):
                         continue
                     while i < n and text[i].isdigit():
                         i += 1
-                tokens.append(f"Number           {text[start:i]}")
+                tokens.append(f"Number          {text[start:i]}")
                 continue
             i += 1
             continue
@@ -118,9 +114,10 @@ def tokenize(text):
             if lex in KEYWORDS:
                 tokens.append(f"{KEYWORDS[lex]:<15} {lex}")
             else:
-                tokens.append(f"Identifier       {lex}")
+                tokens.append(f"Identifier      {lex}")
             continue
- 
+
+        # Check for multi-character operators first
         matched = False
         for op in MULTI_OPS:
             if text.startswith(op, i):
@@ -131,24 +128,37 @@ def tokenize(text):
         if matched:
             continue
 
+        # Check single-character operators
         if c in OPERATORS:
             tokens.append(f"{OPERATORS[c]:<15} {c}")
             i += 1
             continue
 
+    
         tokens.append(f"Lexical Error (line {line}): Illegal character/character sequence")
         tokens.append("Error")
         i += 1
-        
-        '''
-        iya feat: if it encounters an illegal char & there's a letter/digit beside it,
-        it will skip the adjacent char 
-        '''
+
+        # iya feat: if it encounters an illegal char & there's a letter/digit beside it, skip the adjacent char
         if c == "!" and i < n and (text[i].isdigit() or text[i].isalpha()):
             i += 1
-            
+
         continue
 
     tokens.append("EndofFile")
     return tokens
 
+
+class Lexer:
+    def __init__(self, text):
+        self.tokens = tokenize(text)
+        self.index = 0
+
+    def gettoken(self):
+        # Returns the next token from the input
+        if self.index < len(self.tokens):
+            tok = self.tokens[self.index]
+            self.index += 1
+            return tok
+        else:
+            return "EndofFile"
