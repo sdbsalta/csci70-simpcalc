@@ -1,11 +1,5 @@
 To use our program, input the following command:
 
-python main.py < (input file).txt
+python main.py
 
-
-Ex:
-python main.py < sample_input_1.txt
-
-This should return 2 txt files:
- - sample_output_scan_1.txt
- - sample_output_parse_1.txt
+This should find all .txt files with "input" in its name and output 2 txt files for the scanner and parser. 

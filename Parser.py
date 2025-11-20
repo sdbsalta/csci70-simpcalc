@@ -1,8 +1,3 @@
-from Scanner import tokenize
-from io import StringIO
-import os
-import sys
-
 class Parser:
     def __init__(self, tokens, filename):
         self.tokens = tokens

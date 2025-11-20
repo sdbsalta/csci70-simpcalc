@@ -1,6 +1,3 @@
-import os
-import re
-
 KEYWORDS = {
     "PRINT": "Print",
     "IF": "If",
