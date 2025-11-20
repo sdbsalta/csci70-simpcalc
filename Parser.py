@@ -10,7 +10,11 @@ class Parser:
         self.filename = filename
 
     def current(self):
-        return self.tokens[self.index] if self.index < len(self.tokens) else "EndofFile"
+        if self.index < len(self.tokens):
+            return self.tokens[self.index]
+        else: 
+            return "EndofFile"
+             
 
     def advance(self):
         self.index += 1
@@ -38,13 +42,12 @@ class Parser:
             self.Blk()
         else:
             return  # → ε
-
-    # Stm → Identifier := Exp ;
-    # Stm → PRINT(Arg Argfollow) ; {PRINT}
-    # Stm → IF Cnd : Blk Iffollow {IF}
+        
+     # Stm → Identifier := Exp ;
+     # Stm → PRINT(Arg Argfollow) ; {PRINT}
+     # Stm → IF Cnd : Blk Iffollow {IF}
     def Stm(self):
         tok = self.current()
-
         if tok.startswith("Identifier"):
             self.advance()
             self.match("Assign")
@@ -52,7 +55,7 @@ class Parser:
             self.match("Semicolon")
             print("Assignment Statement Recognized")
             return
-
+        
         elif tok.startswith("Print"):
             self.advance()
             self.match("LeftParen")
@@ -62,7 +65,7 @@ class Parser:
             self.match("Semicolon")
             print("Print Statement Recognized")
             return
-
+    
         elif tok.startswith("If"):
             print("If Statement Begins")
             self.advance()
@@ -77,7 +80,7 @@ class Parser:
             print("Invalid Statement")
             raise SyntaxError
 
-    # Argfollow →, Arg Argfollow {Comma}
+    # Argfollow → , Arg Argfollow {Comma}
     # Argfollow → ε
     def Argfollow(self):
         while self.current().startswith("Comma"):
@@ -120,11 +123,15 @@ class Parser:
             self.advance()
             self.Trm()
 
-    # Trm → * Fac Facfollow {Multiply}
-    # Trm → / Fac Facfollow {Divide}
-    # Trm → ε
+    # Trm → Fac Facfollow
     def Trm(self):
         self.Fac()
+        self.Facfollow()
+
+    # Facfollow → * Fac Facfollow {Multiply}
+    # Facfollow → / Fac Facfollow {Divide}
+    # Facfollow → ε
+    def Facfollow(self):
         while self.current().startswith(("Multiply", "Divide")):
             self.advance()
             self.Fac()
@@ -132,12 +139,14 @@ class Parser:
     # Fac → Lit Litfollow
     def Fac(self):
         self.Lit()
-        while self.current().startswith("Raise"):
-            self.advance()
-            self.Lit()
+        self.Litfollow()
 
     # Litfollow → * * Lit Litfollow {Raise}
     # Litfollow → ε
+    def Litfollow(self):
+        while self.current().startswith("Raise"):
+            self.advance()
+            self.Lit()
     
     # Lit → −Val {Minus}
     # Lit → Val
@@ -171,11 +180,7 @@ class Parser:
     # Cnd → Exp Rel Exp
     def Cnd(self):
         self.Exp()
-        if not any(self.current().startswith(x) for x in
-                   ["LessThan", "Equal", "GreaterThan", "LTEqual", "GTEqual", "NotEqual"]):
-            print("Missing relational operator")
-            raise SyntaxError
-        self.advance()
+        self.Rel()
         self.Exp()
 
     # Rel → < {LessThan}
@@ -184,6 +189,13 @@ class Parser:
     # Rel → <= {GTEqual}
     # Rel → != {NotEqual}
     # Rel → >= {LTEqual}
+    def Rel(self):
+        allowed = ["LessThan", "Equal", "GreaterThan", "LTEqual", "GTEqual", "NotEqual"]
+        if any(self.current().startswith(x) for x in allowed):
+            self.advance()   
+        else:
+            print("Missing relational operator")
+            raise SyntaxError
 
     def parse(self):
         try:
