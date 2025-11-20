@@ -41,7 +41,7 @@ def tokenize(text):
         c = text[i]
         
         # iya feat: to count pangilan line na for error line identifier // bonus
-        if c == "\n":
+        if i < n and text[i] == "\n":
             line += 1
             i += 1
             continue
@@ -88,6 +88,7 @@ def tokenize(text):
                     if i + 1 >= n or not text[i+1].isdigit():
                         tokens.append(f"Lexical Error (line {line}): Invalid number format")
                         tokens.append("Error")
+                        line += 1
                         i += 1
                         break
                 i += 1
@@ -99,6 +100,7 @@ def tokenize(text):
                     if i >= n or not text[i].isdigit():
                         tokens.append(f"Lexical Error (line {line}): Invalid number format")
                         tokens.append("Error")
+                        line += 1
                         i += 1
                         continue
                     while i < n and text[i].isdigit():
