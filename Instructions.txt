@@ -1,0 +1,11 @@
+To use our program, input the following command:
+
+python main.py < (input file).txt
+
+
+Ex:
+python main.py < sample_input_1.txt
+
+This should return 2 txt files:
+ - sample_output_scan_1.txt
+ - sample_output_parse_1.txt
