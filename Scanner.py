@@ -40,7 +40,7 @@ def tokenize(text):
     while i < n:
         c = text[i]
         
-        # iya feat: to count pangilan line na
+        # iya feat: to count pangilan line na for error line identifier // bonus
         if c == "\n":
             line += 1
             i += 1

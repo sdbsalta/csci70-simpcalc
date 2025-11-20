@@ -18,7 +18,7 @@ class Parser:
         token = self.current()
         if token.startswith(expected):
             self.advance()
-        else:
+        else: #bonus: added error line identifier
             print(f"Parse Error (line {self.index + 1}): {expected} expected.")
             raise SyntaxError("handled")
 
