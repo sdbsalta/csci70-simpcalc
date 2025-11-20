@@ -31,14 +31,20 @@ OPERATORS = {
 
 MULTI_OPS = ["<=", ">=", "!=", ":=", "**"]
 
-
 def tokenize(text):
+    line = 1
     tokens = []
     i = 0
     n = len(text)
 
     while i < n:
         c = text[i]
+        
+        # iya feat: to count pangilan line na
+        if c == "\n":
+            line += 1
+            i += 1
+            continue
 
         if c.isspace():
             i += 1
@@ -62,7 +68,7 @@ def tokenize(text):
                 tokens.append(f"String           {lex}")
                 i += 1
             else:
-                tokens.append("Lexical Error: Unterminated string")
+                tokens.append(f"Lexical Error (line {line}): Unterminated string")
                 tokens.append("Error")
             continue
 
@@ -74,13 +80,13 @@ def tokenize(text):
             while i < n and (text[i].isdigit() or text[i] == "."):
                 if text[i] == ".":
                     if has_dot:
-                        tokens.append("Lexical Error: Invalid number format")
+                        tokens.append(f"Lexical Error (line {line}): Invalid number format")
                         tokens.append("Error")
                         break
                     has_dot = True
                     # iya feat: check if dot is followed by a digit 
                     if i + 1 >= n or not text[i+1].isdigit():
-                        tokens.append("Lexical Error: Invalid number format")
+                        tokens.append(f"Lexical Error (line {line}): Invalid number format")
                         tokens.append("Error")
                         i += 1
                         break
@@ -91,7 +97,7 @@ def tokenize(text):
                     if i < n and text[i] in "+-":
                         i += 1
                     if i >= n or not text[i].isdigit():
-                        tokens.append("Lexical Error: Invalid number format")
+                        tokens.append(f"Lexical Error (line {line}): Invalid number format")
                         tokens.append("Error")
                         i += 1
                         continue
@@ -130,7 +136,7 @@ def tokenize(text):
             i += 1
             continue
 
-        tokens.append("Lexical Error: Illegal character/character sequence")
+        tokens.append(f"Lexical Error (line {line}): Illegal character/character sequence")
         tokens.append("Error")
         i += 1
         
