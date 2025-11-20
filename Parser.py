@@ -19,7 +19,7 @@ class Parser:
         if token.startswith(expected):
             self.advance()
         else:
-            print(f"Parse Error: {expected} expected.")
+            print(f"Parse Error (line {self.index + 1}): {expected} expected.")
             raise SyntaxError("handled")
 
     ## Grammar rules
