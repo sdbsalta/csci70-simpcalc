@@ -149,28 +149,3 @@ def tokenize(text):
     tokens.append("EndofFile")
     return tokens
 
-def process_file(filename):
-    with open(filename, "r") as f:
-        text = f.read()
-
-    tokens = tokenize(text)
-
-    match = re.search(r'_(\d+)\.txt$', filename)
-    
-    if match:
-        number = match.group(1) # to accomodate sample_input_1 -> sample_output_scan_1
-        output = f'sample_output_scan_{number}.txt'
-    else:
-        output = filename.replace('.txt', '_output_scan.txt')
-
-    with open(output, "w") as f:
-        for t in tokens:
-            f.write(t + "\n")
-
-    print(f"Processed {filename} -> {output}")
-
-
-if __name__ == "__main__":
-    for file in os.listdir("."):
-        if file.endswith(".txt"):
-            process_file(file)

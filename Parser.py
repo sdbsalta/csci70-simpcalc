@@ -204,27 +204,3 @@ class Parser:
         except SyntaxError as e:
             if not str(e):
                 print(f"{self.filename} is NOT a valid SimpCalc program")
-
-if __name__ == "__main__":
-    for file in os.listdir("."):
-        if file.startswith("sample_output_scan_") and file.endswith(".txt"):
-            with open(file, "r") as f:
-                text = f.read().splitlines()
-
-            tokens = [line.strip() for line in text if line.strip()]
-
-            output_file = file.replace("scan", "parse")
-
-            buffer = StringIO()
-            sys_stdout = sys.stdout
-            sys.stdout = buffer
-
-            parser = Parser(tokens, file)
-            parser.parse()
-
-            sys.stdout = sys_stdout
-
-            with open(output_file, "w") as out:
-                out.write(buffer.getvalue())
-
-            print(f"Processed {file} → {output_file}")

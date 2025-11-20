@@ -5,6 +5,25 @@ import os
 import sys
 import re
 
+def make_output_name(input_file, mode):  # mode = "scan" or "parse"
+    # Remove .txt
+    base = input_file[:-4]
+
+    # Replace the first "input" with "output"
+    if "input" in base:
+        base = base.replace("input", "output", 1)
+
+    # Check if filename ends with _number
+    match = re.search(r'_(\d+)$', base)
+    if match:
+        number = match.group(1)
+        base_no_number = base[:-(len(number) + 1)]  # remove _X
+        return f"{base_no_number}_{mode}_{number}.txt"
+
+    # No trailing number
+    return f"{base}_{mode}.txt"
+
+
 def run_pipeline(input_file):
     # ---------- SCANNING ----------
     with open(input_file, "r") as f:
@@ -12,13 +31,8 @@ def run_pipeline(input_file):
 
     tokens = tokenize(text)
 
-    # produce scan output filename
-    match = re.search(r'_(\d+)\.txt$', input_file)
-    if match:
-        number = match.group(1)
-        scan_output = f"sample_output_scan_{number}.txt"
-    else:
-        scan_output = input_file.replace(".txt", "_output_scan.txt")
+    # Scanner output file
+    scan_output = make_output_name(input_file, "scan")
 
     # write scanner output
     with open(scan_output, "w") as f:
@@ -28,17 +42,16 @@ def run_pipeline(input_file):
     print(f"Scanner: {input_file} → {scan_output}")
 
     # ---------- PARSING ----------
-    # remove blank lines & keep token strings
     parser_tokens = [t.strip() for t in tokens if t.strip()]
 
-    # generate parse output filename
-    parse_output = scan_output.replace("scan", "parse")
+    parse_output = make_output_name(input_file, "parse")
 
     buffer = StringIO()
     sys_stdout = sys.stdout
     sys.stdout = buffer
 
-    parser = Parser(parser_tokens, scan_output)
+    # Pass original input filename to parser so messages reflect input file
+    parser = Parser(parser_tokens, input_file)
     parser.parse()
 
     sys.stdout = sys_stdout
@@ -46,11 +59,12 @@ def run_pipeline(input_file):
     with open(parse_output, "w") as f:
         f.write(buffer.getvalue())
 
-    print(f"Parser: {scan_output} → {parse_output}")
+    print(f"Parser: {input_file} → {parse_output}")
     print("Pipeline complete.\n")
 
 
 def main():
+    # Process only .txt files containing "input"
     for file in os.listdir("."):
         if "input" in file.lower() and file.endswith(".txt"):
             run_pipeline(file)
