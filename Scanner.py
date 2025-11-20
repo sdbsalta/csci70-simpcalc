@@ -46,13 +46,15 @@ def tokenize(text):
         if c.isspace():
             i += 1
             continue
-
+        
+        # Check if "//" for comments
         if c == "/" and i + 1 < n and text[i+1] == "/":
             i += 2
             while i < n and text[i] != "\n":
                 i += 1
             continue
 
+        # Check if String
         if c == '"':
             i += 1
             start = i
@@ -67,6 +69,7 @@ def tokenize(text):
                 tokens.append("Error")
             continue
 
+        # Check if Digit
         if c.isdigit():
             start = i
             has_dot = False
@@ -102,6 +105,7 @@ def tokenize(text):
             i += 1
             continue
 
+        # Check if Identifier
         if c.isalpha() or c == "_":
             start = i
             i += 1
@@ -113,7 +117,7 @@ def tokenize(text):
             else:
                 tokens.append(f"Identifier       {lex}")
             continue
-
+ 
         matched = False
         for op in MULTI_OPS:
             if text.startswith(op, i):
